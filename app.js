@@ -59,8 +59,23 @@ app.use(function(err, req, res, next) {
 
 //module.exports = app;
 
-var debug = require('debug')('my-application');
 app.set('port', process.env.PORT || 3000);
 var server = app.listen(app.get('port'), function() {
-    debug('Express server listening on port ' + server.address().port);
+  console.log('Express server listening on port ' + server.address().port);
 });
+
+process.on('SIGTERM', shutDown);
+process.on('SIGINT', shutDown);
+
+function shutDown() {
+    console.log('Received kill signal, shutting down gracefully');
+    server.close(() => {
+        console.log('Closed out remaining connections');
+        process.exit(0);
+    });
+
+    setTimeout(() => {
+        console.error('Could not close connections in time, forcefully shutting down');
+        process.exit(1);
+    }, 10000);
+}
