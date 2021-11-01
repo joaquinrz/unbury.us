@@ -1,4 +1,4 @@
-FROM node:16.13.0-slim
+FROM node:14.18.1-slim
 
 WORKDIR /app
 COPY . .
@@ -9,7 +9,4 @@ RUN npm set progress=false && npm config set depth 0 && \
 
 EXPOSE 3000
 
-USER node
-COPY --chown=node:node . /usr/src/app
-
-ENTRYPOINT ["node", "app.js"]
+ENTRYPOINT ["npm", "start"]
